@@ -64,4 +64,4 @@ export default Login;
 //2. Add whatever state nessiary for form functioning.
 //3. MAKE SURE THAT FORM INPUTS INCLUDE THE LABEL TEXT "username" and "password" RESPECTIVELY.
 //4. If either the username or password is not displaied display EXACTLY the following words: Username or Password not valid.
-//5. If the username / password is equal to Lambda School / i<3Lambd4, save that token to localStorage.
+//5. If the username / password is equal to Lambda School / i<3Lambd4, save that token to localStorage..
