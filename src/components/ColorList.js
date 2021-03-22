@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { axiosWithAuth } from '../helpers/axiosWithAuth';
+import EditMenu from './EditMenu';
 
 const initialColor = {
   color: "",
@@ -17,10 +18,31 @@ const ColorList = ({ colors, updateColors }) => {
 
   const saveEdit = e => {
     e.preventDefault();
-
+    axiosWithAuth()
+      .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then((res) => {
+        updateColors(colors.map((color) => {
+          if (color.id === res.data.id) {
+            return res.data;
+          } else {
+            return color;
+          }
+        }))
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   };
 
   const deleteColor = color => {
+    axiosWithAuth()
+      .delete(`http://localhost:5000/api/colors/${color.id}`)
+      .then((res) => {
+        updateColors(colors.filter((color) => color.id !== parseInt(res.data)))
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   };
 
   return (
@@ -28,17 +50,17 @@ const ColorList = ({ colors, updateColors }) => {
       <p>colors</p>
       <ul>
         {colors.map(color => (
-          <li key={color.color} onClick={() => editColor(color)}>
+          <li key={color.color} data-testid="/color/i" onClick={() => editColor(color)}>
             <span>
               <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+                e.stopPropagation();
+                deleteColor(color)
+              }
+              }>
+                x
               </span>{" "}
-              {color.color}
             </span>
+            {color.color}
             <div
               className="color-box"
               style={{ backgroundColor: color.code.hex }}
@@ -46,7 +68,7 @@ const ColorList = ({ colors, updateColors }) => {
           </li>
         ))}
       </ul>
-      { editing && <EditMenu colorToEdit={colorToEdit} saveEdit={saveEdit} setColorToEdit={setColorToEdit} setEditing={setEditing}/> }
+      { editing && <EditMenu colorToEdit={colorToEdit} saveEdit={saveEdit} setColorToEdit={setColorToEdit} setEditing={setEditing} />}
 
     </div>
   );
